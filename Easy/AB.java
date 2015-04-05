@@ -28,6 +28,12 @@ public class AB {
 	public String createString(int n, int k) {
 		StringBuilder str = new StringBuilder(n);
 		str.setLength(n);
+		if(n & 1) {
+			if(k > n*n/4)
+				return "";
+		}
+		else if(k > (n*n - 1)/4)
+			return "";
 		return getSol(str , n, k, 0, 0, 0);
 	}
 }

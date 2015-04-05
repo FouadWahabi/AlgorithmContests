@@ -28,7 +28,7 @@ public class AB {
 	public String createString(int n, int k) {
 		StringBuilder str = new StringBuilder(n);
 		str.setLength(n);
-		if(n & 1) {
+		if((n & 1) == 0) {
 			if(k > n*n/4)
 				return "";
 		}

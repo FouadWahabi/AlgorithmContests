@@ -6,7 +6,7 @@ import java.util.Stack;
  * Auto-generated code below aims at helping you parse the standard input
  * according to the problem statement.
  **/
-class Test4 {
+class Player {
 
 	public static void main(String args[]) {
 

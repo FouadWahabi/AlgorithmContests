@@ -2,10 +2,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class PasswordProblem {
+public class PasswordProblemL {
 
 	static BufferedReader br = null;
 	static StringTokenizer st;
@@ -27,10 +28,9 @@ public class PasswordProblem {
 	}
 
 	public static void main(String[] args) throws IOException {
-		
-		
+
 		 br = new BufferedReader(new FileReader(new File(
-		 "src/PasswordProblem-small-practice.in")));
+		 "src/PasswordProblem-large-practice.in")));
 		out = new PrintWriter("src/output.out");
 
 //		br = new BufferedReader(new InputStreamReader(System.in));
@@ -42,50 +42,36 @@ public class PasswordProblem {
 
 			int a = nextInt(), b = nextInt();
 
+			double proba = 1;
+
 			double[] prob = new double[a];
 			for (int j = 0; j < a; j++) {
 				prob[j] = nextDouble();
+				proba *= prob[j];
 			}
 
-			double[][] exp = new double[2 + a][(1 << a) + 1];
-			double[] proba = new double[1 << a];
+			// option 1
+			double opt1 = proba * (b - a + 1) + (1 - proba) * (2 * b - a + 2);
 
-			// 0 if wrong 1 if correct
-			for (int j = 0; j < (1 << a); j++) {
-				double pr = 1;
-				for (int h = 0; h < a; h++) {
-					if ((j & (1 << h)) == 0) {
-						pr *= (1 - prob[h]);
-					} else {
-						pr *= prob[h];
-					}
+			// option 2
+			double opt2 = Double.MAX_VALUE;
+			for (int j = 1; j <= a; j++) {
+				double probak = 1;
+				for (int k = 0; k < a - j; k++) {
+					probak *= prob[k];
 				}
-				proba[j] = pr;
 
-				// option 1
-				exp[0][j] = Integer.bitCount(j) == a ? (1 + b - a)
-						: (2 + 2 * b - a);
-				// option 2
-				for (int k = 0; k < a; k++) {
-					int h = ((1 << (a - (k + 1))) - 1);
-					int kj = j & h;
-					exp[k + 1][j] = Integer.bitCount(kj) == a - k - 1 ? (2 * (k + 1) + b - a + 1)
-									: (2 + 2 * (k + 1) + 2 * b - a);
-				}
-				// option 3
-				exp[a + 1][j] = 2 + b;
+				double opt = (1 - probak) * (2 * j + 2 * b - a + 2) + (probak)
+						* (2 * j + b - a + 1);
+
+				if (opt < opt2)
+					opt2 = opt;
 			}
-			// expected
-			for (int j = 0; j < a + 2; j++) {
-				exp[j][(1 << a)] = 0;
-				for (int k = 0; k < (1 << a); k++) {
-					exp[j][(1 << a)] += proba[k] * exp[j][k];
-				}
 
-				if (exp[j][(1 << a)] < res) {
-					res = exp[j][(1 << a)];
-				}
-			}
+			// option 3
+			double opt3 = 2 + b;
+
+			res = Math.min(opt1, Math.min(opt2, opt3));
 
 			// output
 			System.out.println("Case #" + (i + 1) + ": " + res);
